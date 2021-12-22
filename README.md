@@ -1,6 +1,6 @@
 # CIC.Calculator
 
-The scripts are used to count and analyze the barcodes. Scripts for generating MM plot and frequency tables are also provided.   
+The scripts are used to count and analyze the barcodes sequences. Scripts for generating MM plot and frequency tables are also provided.   
 
 ## Requriement
 Python3 and R (v>=3.6) are required to run the pipeline. 
