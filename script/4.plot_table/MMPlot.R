@@ -1,4 +1,4 @@
-# generate circos plot from output. 
+# generate MM plot from output. 
 # Only works for this experimental design.
 #
 
