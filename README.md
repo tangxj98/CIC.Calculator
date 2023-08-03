@@ -12,3 +12,6 @@ Python3 and R (v>=3.6) are required to run the pipeline.
 4. Generate MM plot and frequency count table. 
 
 ![Example](https://github.com/tangxj98/CIC.Calculator/blob/main/Example/Example.png)
+
+Please see more details in the publications:
+Syed Mohammed Musheer Aalam and others, DNA barcoded competitive clone-initiating cell analysis reveals novel features of metastatic growth in a cancer xenograft model, NAR Cancer, Volume 4, Issue 3, September 2022, zcac022, https://doi.org/10.1093/narcan/zcac022
