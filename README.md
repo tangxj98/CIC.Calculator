@@ -15,4 +15,4 @@ Python3 and R (v>=3.6) are required to run the pipeline.
 
 Please see more details in the publications:  
   
-Syed Mohammed Musheer Aalam and others, DNA barcoded competitive clone-initiating cell analysis reveals novel features of metastatic growth in a cancer xenograft model, NAR Cancer, Volume 4, Issue 3, September 2022, zcac022, https://doi.org/10.1093/narcan/zcac022
+Syed Mohammed Musheer Aalam, Xiaojia Tang, Jianning Song, Upasana Ray, Stephen J Russell, S John Weroha, Jamie Bakkum-Gamez, Viji Shridhar, Mark E Sherman, Connie J Eaves, David J H F Knapp, Krishna R Kalari, Nagarajan Kannan, DNA barcoded competitive clone-initiating cell analysis reveals novel features of metastatic growth in a cancer xenograft model, NAR Cancer, Volume 4, Issue 3, September 2022, zcac022, https://doi.org/10.1093/narcan/zcac022
