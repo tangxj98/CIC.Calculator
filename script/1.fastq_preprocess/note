@@ -1,0 +1,11 @@
+1.  extract index and barcode using R1 fastq
+
+.sh index.extract.pe.sh <R1 fastq.gz>
+
+2.  (Optional) if one sample was processed in multiple flowcell, run merge
+
+
+3. format the output file with preprocess.pe.R
+notice that spikein.control.txt is needed 
+
+output is *.mergeinput.txt 
