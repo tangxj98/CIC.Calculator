@@ -7,36 +7,51 @@ if(length(args)!=2){
 
 library(tidyr)
 library(pheatmap)
-library(investr)
+library(investr,lib.loc="~/staff_analysis/R")
 file=args[1]
 filename=tail(unlist(strsplit(file,"/")),n=1)
 name=args[2]
 print(name)
 
-spikein.contol <- read.table("data/spikin.control.txt",header=T,sep="\t",stringsAsFactors = F)
+spikein.contol <- read.table("spikein.control.txt",header=T,sep="\t",stringsAsFactors = F)
 spikein.contol$Spike.in.BC.short <- sapply(spikein.contol$Spike.in.Barcode.Sequence, function(x) substr(x,1,33) ) 
 
  
 # read clustered file  e.g. BC_Run1_04.cluster.txt
 
-index1.coding <- read.table("data/index1.coding.txt",header=F,sep="\t",stringsAsFactors = F)
+index1.coding <- read.table("index1.coding.txt",header=F,sep="\t",stringsAsFactors = F)
 rownames(index1.coding) <- index1.coding$V2
-index2.coding <- read.table("data/index2.coding.txt",header=F,sep="\t",stringsAsFactors = F)
+index2.coding <- read.table("index2.coding.txt",header=F,sep="\t",stringsAsFactors = F)
 rownames(index2.coding) <- index2.coding$V2
 
-allcluster <- read.table(file,header=F,sep="\t",stringsAsFactors = F)
- head(allcluster)
+# debug
+print(head(index1.coding))
+print(head(index2.coding))
+
+#allcluster <- read.table(file,header=F,sep="\t",stringsAsFactors = F)
+test<- read.table(file,sep="?",header=F,nrows=1)
+if(grepl("index",test[1,],ignore.case=T)){header=T}else{header=F}
+
+allcluster <- read.table(file,header=header,sep="\t",stringsAsFactors = F)
+
 colnames(allcluster) <- c("index.1","Barcode.Sequence","index.2","count","Is.Spikein","cluster","FirstBC")
 allcluster$Is.Spikein2 <- ifelse(allcluster$FirstBC %in% spikein.contol$Spike.in.BC.short,"Yes","No")
+
+#print(head(allcluster))
 
 pdf(paste(name,"withinSample.filtering.pdf",sep = "."),width=9,height=9 )  
 par(mfrow=c(3,3))
 # before filtering the distribution and percentage: 
 allcluster.counts.index.stat <- aggregate(allcluster$count,by=list(allcluster$index.1,allcluster$index.2), FUN=sum)
 colnames(allcluster.counts.index.stat) <- c("Index.1","Index.2","count")
+#print(head(allcluster.counts.index.stat))
+
 allcluster.counts.index.stat.matrix <- spread(allcluster.counts.index.stat,key = "Index.2", value = count)
 
 nas <- which(is.na(allcluster.counts.index.stat.matrix),arr.ind = T) 
+print(paste("there are",length(nas),"NAs"))
+
+
 if(nrow(nas)>0){
   cat("###################\n")
   cat("The following samples have no counts: \n")
@@ -47,6 +62,7 @@ if(nrow(nas)>0){
 }
 allcluster.counts.index.stat.matrix[ is.na(allcluster.counts.index.stat.matrix)] <- 0
 rownames(allcluster.counts.index.stat.matrix) <- allcluster.counts.index.stat.matrix[,1]
+#print(allcluster.counts.index.stat.matrix)
 allcluster.counts.index.stat.matrix <- data.matrix(allcluster.counts.index.stat.matrix[,-1])
 allcluster.FRV.index.stat.matrix <- round(apply(allcluster.counts.index.stat.matrix, 2, function(x) x/sum(x)),digits = 3)
 
@@ -56,13 +72,15 @@ write.table(allcluster.FRV.index.stat.matrix,paste0(name,".beforeFiletering.stat
 
 index1 <- unique(allcluster$index.1)
 index2 <- unique(allcluster$index.2)
-
+print(index1)
+print(index2)
 #filtered FRV, filtered counts 
-filtered.counts <- matrix(data=NA,nrow=5,ncol=20)
-rownames(filtered.counts) <- index1[index1!="GTCA"]
+nonsp.id1=index1[index1!="GTCA"]
+filtered.counts <- matrix(data=NA,nrow=length(nonsp.id1),ncol=length(index2))
+rownames(filtered.counts) <- nonsp.id1 
 colnames(filtered.counts) <- index2
 
-filtered.FRV <- matrix(data=NA,nrow=5,ncol=20)
+filtered.FRV <- matrix(data=NA,nrow=length(nonsp.id1),ncol=length(index2))
 rownames(filtered.FRV) <- index1[index1!="GTCA"]
 colnames(filtered.FRV) <- index2
 
@@ -119,15 +137,15 @@ for ( id2 in index2) {
   
   
   reg <- lm(data = sp.output, formula = log10(FRV)~log10(Input.Copies))
-  # plot(log10(sp.output$Input.Copies), log10(sp.output$FRV),xlab="log10(Input Copies)", ylab="log10(FRV)",pch=19,ylim=c(-6,2),main=id2)
-  # abline(reg, lty=2, lwd=2, col="red")
-  # mtext(paste("R squared=", round(summary(reg)$r.squared, digits=3), sep=" "), adj=1)
-  # mtext(paste("y=", round(summary(reg)$coefficients[2,1], digits=4),"x", round(summary(reg)$coefficients[1,1], digits=4),   sep=" "), adj=0)
+   plot(log10(sp.output$Input.Copies), log10(sp.output$FRV),xlab="log10(Input Copies)", ylab="log10(FRV)",pch=19,ylim=c(-6,2),main=id2)
+   abline(reg, lty=2, lwd=2, col="red")
+   mtext(paste("R squared=", round(summary(reg)$r.squared, digits=3), sep=" "), adj=1)
+   mtext(paste("y=", round(summary(reg)$coefficients[2,1], digits=4),"x", round(summary(reg)$coefficients[1,1], digits=4),   sep=" "), adj=0)
   reg2 <- lm(data = sp.output.rm1, formula = log10(FRV)~log10(Input.Copies))
-  # abline(reg2, lty=2, lwd=2, col="blue")
-  # 
-  # mtext(paste("R squared=", round(summary(reg2)$r.squared, digits=3), sep=" "), adj=1,line=1)
-  # mtext(paste("y=", round(summary(reg2)$coefficients[2,1], digits=4),"x", round(summary(reg2)$coefficients[1,1], digits=4),   sep=" "), adj=0,line=1)
+   abline(reg2, lty=2, lwd=2, col="blue")
+   
+   mtext(paste("R squared=", round(summary(reg2)$r.squared, digits=3), sep=" "), adj=1,line=1)
+   mtext(paste("y=", round(summary(reg2)$coefficients[2,1], digits=4),"x", round(summary(reg2)$coefficients[1,1], digits=4),   sep=" "), adj=0,line=1)
   
 
   
@@ -191,8 +209,8 @@ for ( id2 in index2) {
   minimum.input.cell=round(invest(reg3,log10(best.cutoff),upper = 10000000,lower=0,interval = "none") )
 
   
-  # hist(log10(ns.output$FRV), breaks = 100, xlab="log10(FRV)",main=paste0(id2, " unwanted barcode counts after filtering % =",round(sum(ns.output.filtered$count)*100/sum(spikein_cluster$count),digits = 2),"%") ) 
-  # abline(v=log10(best.cutoff),col="red",lty=4,lwd=2)
+   hist(log10(ns.output$FRV), breaks = 100, xlab="log10(FRV)",main=paste0(id2, " unwanted barcode counts after filtering % =",round(sum(ns.output.filtered$count)*100/sum(spikein_cluster$count),digits = 2),"%") ) 
+   abline(v=log10(best.cutoff),col="red",lty=4,lwd=2)
   
 
   
