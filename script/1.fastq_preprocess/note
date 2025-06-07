@@ -7,5 +7,6 @@
 
 3. format the output file with preprocess.pe.R
 notice that spikein.control.txt is needed 
+Rscript preprocessing.PE.R  BC1_R1_001.output.txt BC1 spikein.control.txt sample_index2.mapping.txt
 
 output is *.mergeinput.txt 
