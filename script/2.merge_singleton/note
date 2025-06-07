@@ -5,6 +5,10 @@ input: mergeinput.txt file
 index1: sequence of index1 identified in this sample. 
 index2: sequence of index2 identified in this sample.
 
+an example bash code (assume 1. there is header line in the BC1.mergeinput.txt file; 2. col 2nd in the body is index1; 3. col 4th is index2 ): 
+for i in $( tail -n+2 BC1.mergeinput.txt | cut -f2 | sort -u ); do for j in $(tail -n+2 BC1.mergeinput.txt | cut -f4 | sort -u); do Rscript merge.PE.R BC1.mergeinput.txt  $i $j BC1 >& BC1.$i.$j.log & done ; done
+
+
 for quick processing,
 1. remove singleton barcode where counts =1.
 2. set dist=0, no merge. 
