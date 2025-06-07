@@ -1,0 +1,12 @@
+
+Usage:Rscript merge.PE.R <input file> <index1> <index2> <output prefix>
+
+input: mergeinput.txt file
+index1: sequence of index1 identified in this sample. 
+index2: sequence of index2 identified in this sample.
+
+for quick processing,
+1. remove singleton barcode where counts =1.
+2. set dist=0, no merge. 
+3. there will be reformatting. outputs are <sample name>.<index1>.<index2>.cluster.txt in the folder <sample name>
+
