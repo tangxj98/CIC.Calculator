@@ -1,0 +1,3 @@
+for each sample, concatenate all clusters in folder <sample name> into <sample name>.cluster.txt
+
+ Rscript filtering.summary.sampleThreshold.ROCplot.R BC1.cluster.txt BC1
